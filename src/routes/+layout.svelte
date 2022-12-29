@@ -3,11 +3,11 @@
 	import Texas from '../lib/Texas.svelte';
 </script>
 
-<div class="container mx-auto px-6 py-10 lg:px-20 lg:py-24relative">
-	<main class="">
+<div class="container mx-auto px-6 py-10 lg:px-20 lg:py-24relative flex flex-col min-h-screen">
+	<main class="grow">
 		<slot />
 	</main>
-	<footer class={`pt-24 pb-20 z-10 relative text-right`}>
+	<footer class={`pt-24 pb-12 z-10 relative text-right`}>
 		<small
 			>&copy; {new Date().getFullYear()}
 			<a
@@ -21,6 +21,11 @@
 			>
 				<Texas />
 			</span>
+		</small>
+		<small class="block font-thin text-xs">
+			<a href="https://www.flaticon.com/free-icons/skull" title="skull icon"
+				>Skull favicon by Andy Horvath</a
+			>
 		</small>
 	</footer>
 </div>

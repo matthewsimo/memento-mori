@@ -4,6 +4,10 @@
 
 	import { chunk } from '../lib/utils';
 
+	export let date;
+
+	console.log({ date });
+
 	const weeksPerYear = 52;
 	const totalYears = 90;
 
@@ -12,7 +16,7 @@
 		Array.from(Array(numberOfWeeks)).map((_v, i) => i),
 		13
 	);
-	let start = new Date(1984, 3, 29);
+	let start = new Date(date);
 	let now = new Date();
 	let diff = differenceInWeeks(now, start);
 

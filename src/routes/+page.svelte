@@ -2,57 +2,62 @@
 	import { onMount } from 'svelte';
 	import { waitFor } from '../lib/utils';
 	import Grid from '../lib/Grid.svelte';
+	import Quote from '../lib/Quote.svelte';
+	import { opacityTransition } from '../lib/classes';
+	import { date } from '../lib/stores/date';
 
 	let mounted = false;
-	let hideQuote = false;
+	let showQuote = true;
+	let showDate = false;
 	onMount(async () => {
 		mounted = true;
-		await waitFor(4000);
-		hideQuote = true;
-		await waitFor(800);
-		showGrid = true;
+		showQuote = true;
+		await waitFor(500);
+		if (!hasDate) {
+			showDate = true;
+		}
+		await waitFor(9_500);
+		showQuote = false;
 	});
 
-	let showGrid = false;
-
-	const quote = {
-		q: `Do not act as if you were going to live ten thousand years. Death hangs over you. While you live, and while it is in your power, be good.`,
-		author: `Marcus Aurelius`,
-		source: `Meditations`
+	const handleChange = async () => {
+		if (hasDate) {
+			await waitFor(500);
+			showDate = false;
+		}
 	};
 
-	// @TODO - Add more quotes
-	// @TODO - Randomize & auto advance quotes
-	// @TODO - Enter DOB input
-	// @TODO - Store DOB in localstorage
-	// @TODO - Use DOB for grid calc
-
-	$: opacityTransition = `transition-opacity ease-in-out duration-200`;
+	$: hasDate = Boolean($date) && parseInt($date.split('-')[0]) > 1900;
+	$: opacity = mounted ? 'opacity-100' : 'opacity-0';
 </script>
 
-<h1
-	class={`text-center uppercase font-black text-5xl py-10 pb-16 ${opacityTransition}  ${
-		mounted ? 'opacity-100' : 'opacity-0'
-	}`}
->
-	Momento Mori
+<h1 class={`text-center uppercase font-black text-5xl py-10 pb-16 ${opacityTransition} ${opacity}`}>
+	Memento Mori
 </h1>
 
-{#if showGrid}
-	<Grid />
-{:else}
+{#if showQuote}
+	<Quote />
+{:else if !hasDate || showDate}
 	<div
-		class={`p-20 ${opacityTransition} delay-300 duration-500 ${
-			mounted && !hideQuote ? 'opacity-100' : 'opacity-0'
+		class={`mx-auto flex flex-1 gap-4 justify-center items-center ${opacityTransition} ${
+			hasDate ? 'opacity-0' : 'opacity-100'
 		}`}
 	>
-		<figure class="space-y-10">
-			<blockquote class="text-6xl font-bold leading-snug">
-				{quote.q}
-			</blockquote>
-			<figcaption class="text-2xl text-right font-light">
-				&mdash; {quote.author} <cite>{quote.source}</cite>
-			</figcaption>
-		</figure>
+		<label for="dob" class="text-3xl font-thin">Date of birth:</label>
+		<input
+			name="dob"
+			class="text-3xl rounded-sm p-1 bg-slate-100 text-neutral-700 inline-block my-10"
+			type="date"
+			bind:value={$date}
+			on:change={handleChange}
+		/>
 	</div>
+{:else}
+	<Grid date={$date} />
 {/if}
+
+<style>
+	input::-webkit-calendar-picker-indicator {
+		filter: invert(29%) sepia(0%) saturate(0%) hue-rotate(198deg) brightness(78%) contrast(90%);
+	}
+</style>
